@@ -1,6 +1,7 @@
 """
 PROYECTO: BUSCAMINAS EN CONSOLA
-Autor: Estudiante ILERNA
+Autor: Pablo Calderón, Hugo, Miguel y Alejandro.
+Curso: 2º ASIR
 Descripción: Juego de Buscaminas sin interfaz gráfica, solo por consola
 """
 
