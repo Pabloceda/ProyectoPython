@@ -9,10 +9,17 @@ import random
 # =====================================================================
 # PARTE 1: CONFIGURACIÓN DEL JUEGO
 # =====================================================================
-# Estas variables definen el tamaño del tablero y la cantidad de minas
-FILAS = 8          # Número de filas del tablero
-COLUMNAS = 8       # Número de columnas del tablero
-NUM_MINAS = 10     # Número de minas a colocar
+# Estas variables se configuran según el nivel de dificultad elegido
+FILAS = 8          # Número de filas del tablero (se ajusta según dificultad)
+COLUMNAS = 8       # Número de columnas del tablero (se ajusta según dificultad)
+NUM_MINAS = 10     # Número de minas a colocar (se ajusta según dificultad)
+
+# Configuraciones de dificultad
+DIFICULTADES = {
+    '1': {'nombre': 'Fácil', 'filas': 6, 'columnas': 6, 'minas': 5},
+    '2': {'nombre': 'Medio', 'filas': 8, 'columnas': 8, 'minas': 10},
+    '3': {'nombre': 'Difícil', 'filas': 12, 'columnas': 12, 'minas': 20}
+}
 
 
 # =====================================================================
@@ -234,16 +241,61 @@ def mostrar_minas(tablero, tablero_visible):
 
 
 # =====================================================================
-# PARTE 10: FUNCIÓN PRINCIPAL DEL JUEGO
+# PARTE 10: FUNCIÓN PARA MOSTRAR MENÚ DE DIFICULTAD
 # =====================================================================
-def jugar():
+def menu_dificultad():
+    """
+    Muestra el menú de selección de dificultad y retorna la configuración elegida.
+    
+    Returns:
+        dict: Configuración del nivel elegido (filas, columnas, minas)
+    """
+    print("\n" + "=" * 50)
+    print("     🎮 BUSCAMINAS - SELECCIÓN DE DIFICULTAD")
+    print("=" * 50)
+    print("\n📊 Elige tu nivel de dificultad:\n")
+    print("  1️⃣  FÁCIL    -  Tablero 6x6   -  5 minas")
+    print("  2️⃣  MEDIO    -  Tablero 8x8   - 10 minas")
+    print("  3️⃣  DIFÍCIL  -  Tablero 12x12 - 20 minas")
+    print("\n" + "=" * 50)
+    
+    while True:
+        opcion = input("\n👉 Selecciona (1/2/3): ").strip()
+        
+        if opcion in DIFICULTADES:
+            config = DIFICULTADES[opcion]
+            print(f"\n✅ Has elegido: {config['nombre']}")
+            print(f"   Tablero: {config['filas']}x{config['columnas']}")
+            print(f"   Minas: {config['minas']}\n")
+            return config
+        else:
+            print("❌ Opción inválida. Por favor, elige 1, 2 o 3.")
+
+
+# =====================================================================
+# PARTE 11: FUNCIÓN PRINCIPAL DEL JUEGO
+# =====================================================================
+def jugar(filas, columnas, num_minas, nombre_dificultad):
     """
     Función principal que ejecuta el juego de Buscaminas.
     Controla el flujo del juego: inicialización, turnos y fin del juego.
+    
+    Args:
+        filas (int): Número de filas del tablero
+        columnas (int): Número de columnas del tablero
+        num_minas (int): Número de minas a colocar
+        nombre_dificultad (str): Nombre del nivel de dificultad
     """
-    print("=" * 40)
-    print("     BUSCAMINAS - JUEGO EN CONSOLA")
-    print("=" * 40)
+    # Actualiza las variables globales con la configuración elegida
+    global FILAS, COLUMNAS, NUM_MINAS
+    FILAS = filas
+    COLUMNAS = columnas
+    NUM_MINAS = num_minas
+    
+    print("\n" + "=" * 50)
+    print("     🎯 BUSCAMINAS - JUEGO EN CONSOLA")
+    print("=" * 50)
+    print(f"Dificultad: {nombre_dificultad}")
     print(f"Tablero: {FILAS}x{COLUMNAS}")
     print(f"Número de minas: {NUM_MINAS}")
     print("\nInstrucciones:")
@@ -251,7 +303,7 @@ def jugar():
     print("- '#' = celda cubierta")
     print("- Números = cantidad de minas adyacentes")
     print("- ' ' = celda vacía (sin minas cerca)")
-    print("=" * 40)
+    print("=" * 50)
     
     # INICIALIZACIÓN DEL JUEGO
     tablero = crear_tablero()                    # Crea tablero vacío
@@ -308,15 +360,24 @@ def jugar():
     # Pregunta si quiere jugar de nuevo
     jugar_otra = input("¿Quieres jugar otra vez? (s/n): ")
     if jugar_otra.lower() == 's':
-        jugar()
+        # Permite elegir dificultad de nuevo
+        config = menu_dificultad()
+        jugar(config['filas'], config['columnas'], config['minas'], config['nombre'])
 
 
 # =====================================================================
-# PARTE 11: PUNTO DE ENTRADA DEL PROGRAMA
+# PARTE 12: PUNTO DE ENTRADA DEL PROGRAMA
 # =====================================================================
 if __name__ == "__main__":
     """
     Este bloque se ejecuta solo cuando el archivo se ejecuta directamente.
-    Inicia el juego llamando a la función jugar().
+    Muestra el menú de dificultad y luego inicia el juego.
     """
-    jugar()
+    # Muestra el menú y obtiene la configuración elegida
+    configuracion = menu_dificultad()
+    
+    # Inicia el juego con la configuración elegida
+    jugar(configuracion['filas'], 
+          configuracion['columnas'], 
+          configuracion['minas'], 
+          configuracion['nombre'])
