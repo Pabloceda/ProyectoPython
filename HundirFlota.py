@@ -20,6 +20,20 @@ class Tablero:
         for i in range (10):
             #Cada vuelta se añade una fila d agua
             self.celdas.append(['~'] * 10)
+            
+            #Herramienta de traducción
+        self.letras = ["A","B","C","D","E","F","G","H","I","J"]
+        
+    def colocar_barco(self, barco, fila, columna, orientacion):
+        #En caso de horizontal sumamos columna
+        if orientacion == 'H':
+            for i in range(barco.longitud):
+                self.celdas[fila][columna + i] = "B"
+                
+        #En caso vertical sumamos filas
+        elif orientacion == 'V':
+            for i in range (barco.longitud):
+                self.celdas[fila + i][columna] = "B"
 
 class Jugador:
     def __init__(self):
