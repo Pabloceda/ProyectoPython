@@ -34,6 +34,11 @@ class Tablero:
         elif orientacion == 'V':
             for i in range (barco.longitud):
                 self.celdas[fila + i][columna] = "B"
+                
+    def disparar(self, fila, columna):
+        # Cuando toquemos un barco
+        if self.celdas[fila][columna] == "B":
+            print("¡Tocado!")
 
 class Jugador:
     def __init__(self):
