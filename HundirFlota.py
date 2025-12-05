@@ -125,10 +125,40 @@ def jugar():
             #Pedimos coordenadas
             coord = input("INTRODUCE TUS COORDENADAS:").upper()
             
-            #Procesar el disparo
+            try:
+                fila = usuario.tablero_propio.letras.index(coord[0])
+                columna = int(coord[1]) - 1
+                resultado = cpu.tablero_propio.disparar(fila, columna)
+                if resultado == "Tocado":
+                    usuario.tablero_rival.celdas[fila][columna] = "X"
+                    print("🔥🔥🔥LE HAS DADO🔥🔥🔥")
+                
+                elif resultado == "Agua":
+                    usuario.tablero_rival.celdas[fila][columna] = "0"
+                    print("🌊🌊🌊AGUA🌊🌊🌊")
+                
+                elif resultado == "Repetido":
+                    print("Ya habías disparado ahí")
+            
+            except:
+                print("¡Coordenada no válida! (D1,A3...)")
+                continue
+            
+            
+            
         else:
             print("===TURNO DEL RIVAL===")
-            #La IA disparará al azar
+            
+            fila_cpu = random.randint(0, 9)
+            col_cpu = random.randint(0, 9)
+            print (f"LA CPU DISPARA A: {fila_cpu},{col_cpu}")
+            resultado = usuario.tablero_propio.disparar(fila_cpu, col_cpu)
+            
+            if resultado == "Tocado":
+                print("🔥🔥🔥TE HAN DADO🔥🔥🔥")
+            
+            else:
+                print("🌊🌊🌊LA IA HA FALLADO🌊🌊🌊")
         
         # Cambiamos de turno
         turno_usuario = not turno_usuario
