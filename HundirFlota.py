@@ -39,6 +39,17 @@ class Tablero:
         # Cuando toquemos un barco
         if self.celdas[fila][columna] == "B":
             print("¡Tocado!")
+            self.celdas[fila][columna] = "X"
+            return "Tocado"
+            
+        elif self.celdas[fila][columna] == "~":
+            print("¡Agua!")
+            self.celdas[fila][columna] = "0"
+            return "Agua"
+        
+        else:
+            print("¡Ya habías disparado aquí parguela!")
+            return "Repetido"
 
 class Jugador:
     def __init__(self):
@@ -46,4 +57,11 @@ class Jugador:
         self.tablero_rival = Tablero()
         
 
+#ZONA DE JUEGO#
+jugador1 = jugador()
+jugador1.tablero_propio.colocar_barco(Barco(3), 0, 0,"H")
+
+print("Tablero del jugador")
+for fila in jugador1.tablero_propio.celdas:
+    print (fila)
 
