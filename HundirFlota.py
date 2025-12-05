@@ -73,7 +73,14 @@ class Tablero:
                 barco = Barco(longitud)
                 self.colocar_barco(barco, fila, columna, orientacion)
                 #Terminar el bucle
-                break                
+                break  
+            
+        
+    def hay_barcos(self):
+        for fila in self.celdas:
+            if "B" in fila:
+                return True
+        return False              
                 
     
                 
@@ -139,6 +146,11 @@ def jugar():
                 
                 elif resultado == "Repetido":
                     print("Ya habías disparado ahí")
+                    
+                if cpu.tablero_propio.hay_barcos() == False:
+                    print("🏆🏆🏆¡VICTORIA, HAS HUNDIDO TODOS LOS BARCOS!🏆🏆🏆")
+                    break
+                    
             
             except:
                 print("¡Coordenada no válida! (D1,A3...)")
@@ -159,6 +171,9 @@ def jugar():
             
             else:
                 print("🌊🌊🌊LA IA HA FALLADO🌊🌊🌊")
+                
+            if usuario.tablero_propio.hay_barcos() == False:
+                print("☠️☠️☠️DERROTA, LA IA HA HUNDIDO TODOS TUS BARCOS☠️☠️☠️")
         
         # Cambiamos de turno
         turno_usuario = not turno_usuario
