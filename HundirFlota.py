@@ -58,7 +58,7 @@ class Jugador:
         
 
 #ZONA DE JUEGO#
-jugador1 = jugador()
+jugador1 = Jugador()
 jugador1.tablero_propio.colocar_barco(Barco(3), 0, 0,"H")
 
 print("Tablero del jugador")
