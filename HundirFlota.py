@@ -134,7 +134,7 @@ def jugar():
             
             try:
                 fila = usuario.tablero_propio.letras.index(coord[0])
-                columna = int(coord[1]) - 1
+                columna = int(coord[1:]) - 1
                 resultado = cpu.tablero_propio.disparar(fila, columna)
                 if resultado == "Tocado":
                     usuario.tablero_rival.celdas[fila][columna] = "X"
