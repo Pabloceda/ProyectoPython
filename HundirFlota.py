@@ -41,20 +41,20 @@ class Tablero:
                 
     def es_valido(self, longitud, fila, columna, orientacion):
         #Comprobar si se sale del tablero
-        if orientacion == "H":
+        if orientacion == 'H':
             if columna + longitud > 10:
                 return False
-            elif orientacion == "V":
+        elif orientacion == 'V':
                 if fila + longitud > 10:
                     return False
         
         #Comprobar si choca con otro barco
-        if orientacion == "H":
-            for i in range (longitud):
+        if orientacion == 'H':
+            for i in range(longitud):
                 if self.celdas[fila][columna + i] != "~":
                     return False
-        elif orientacion == "V":
-            for i in range (longitud):
+        elif orientacion == 'V':
+            for i in range(longitud):
                 if self.celdas[fila + i][columna] != "~":
                     return False
                 
@@ -66,11 +66,11 @@ class Tablero:
             #Se eligen coordenadas y orientacion al azar
             fila = random.randint(0, 9)
             columna = random.randint(0, 9)
-            orientacion = random.choice(["H", "V"])
+            orientacion = random.choice(['H', 'V'])
             
             #Si el sitio es valido creamos el barco y lo ponemos
             if self.es_valido(longitud, fila, columna, orientacion):
-                barco = barco(longitud)
+                barco = Barco(longitud)
                 self.colocar_barco(barco, fila, columna, orientacion)
                 #Terminar el bucle
                 break                
@@ -111,9 +111,10 @@ flota = [5, 4, 3, 3, 2]
 print("Generando flota enemiga...")
 for longitud in flota:
     cpu.tablero_propio.colocar_aleatorio(longitud)
-    print("Tablero CPU")
-    for fila in cpu.tablero_propio.celdas:
-        print(fila)
+    
+print("Tablero CPU")
+for fila in cpu.tablero_propio.celdas:
+    print(fila)
 
 
 
