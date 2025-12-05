@@ -64,4 +64,10 @@ jugador1.tablero_propio.colocar_barco(Barco(3), 0, 0,"H")
 print("Tablero del jugador")
 for fila in jugador1.tablero_propio.celdas:
     print (fila)
+    
+print ("Disparo")
+jugador1.tablero_propio.disparar(0, 0)
+print ("Despues del disparo")
+for fila in jugador1.tablero_propio.celdas:
+    print(fila)
 
