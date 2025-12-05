@@ -100,21 +100,73 @@ class Jugador:
         
 
 
+def jugar():
+    #1 Preparativos
+    print("===INICIANDO JUEGO===")
+    usuario = Jugador()
+    cpu = Jugador()
+    
+    #2 Colocacion de barcos
+    flota = [5, 4, 3, 3, 2]
+    print("===COLOCANDO BARCOS===")
+    for longitud in flota:
+        usuario.tablero_propio.colocar_aleatorio(longitud)
+        cpu.tablero_propio.colocar_aleatorio(longitud)
+        
+    #3 Empieza la batalla
+    turno_usuario = True
+    while True:
+        if turno_usuario:
+            print("===ES TU TURNO===")
+            print("TUS DISPAROS:")
+            for fila in usuario.tablero_rival.celdas:
+                print (fila)
+            
+            #Pedimos coordenadas
+            coord = input("INTRODUCE TUS COORDENADAS:").upper()
+            
+            #Procesar el disparo
+        else:
+            print("===TURNO DEL RIVAL===")
+            #La IA disparará al azar
+        
+        # Cambiamos de turno
+        turno_usuario = not turno_usuario
+        
+#EMPIEZA EL JUEGO
+jugar()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 #Prueba de IA
-cpu = Jugador()
+#cpu = Jugador()
 #Lista de barcos tipicos
-flota = [5, 4, 3, 3, 2]
-print("Generando flota enemiga...")
-for longitud in flota:
-    cpu.tablero_propio.colocar_aleatorio(longitud)
-    
-print("Tablero CPU")
-for fila in cpu.tablero_propio.celdas:
-    print(fila)
+#flota = [5, 4, 3, 3, 2]
+#print("Generando flota enemiga...")
+#for longitud in flota:
+#    cpu.tablero_propio.colocar_aleatorio(longitud)
+#    
+#print("Tablero CPU")
+#for fila in cpu.tablero_propio.celdas:
+#    print(fila)
 
 
 
