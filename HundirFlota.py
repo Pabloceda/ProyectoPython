@@ -1,3 +1,6 @@
+import random
+
+
 print("***Hundir la Flota***")
 
 class Barco:
@@ -35,6 +38,45 @@ class Tablero:
             for i in range (barco.longitud):
                 self.celdas[fila + i][columna] = "B"
                 
+                
+    def es_valido(self, longitud, fila, columna, orientacion):
+        #Comprobar si se sale del tablero
+        if orientacion == "H":
+            if columna + longitud > 10:
+                return False
+            elif orientacion == "V":
+                if fila + longitud > 10:
+                    return False
+        
+        #Comprobar si choca con otro barco
+        if orientacion == "H":
+            for i in range (longitud):
+                if self.celdas[fila][columna + i] != "~":
+                    return False
+        elif orientacion == "V":
+            for i in range (longitud):
+                if self.celdas[fila + i][columna] != "~":
+                    return False
+                
+        #Si ha pasado todas las pruebas es valido
+        return True
+    
+    def colocar_aleatorio(self, longitud):
+        while True:
+            #Se eligen coordenadas y orientacion al azar
+            fila = random.randint(0, 9)
+            columna = random.randint(0, 9)
+            orientacion = random.choice(["H", "V"])
+            
+            #Si el sitio es valido creamos el barco y lo ponemos
+            if self.es_valido(longitud, fila, columna, orientacion):
+                barco = barco(longitud)
+                self.colocar_barco(barco, fila, columna, orientacion)
+                #Terminar el bucle
+                break                
+                
+    
+                
     def disparar(self, fila, columna):
         # Cuando toquemos un barco
         if self.celdas[fila][columna] == "B":
@@ -57,17 +99,43 @@ class Jugador:
         self.tablero_rival = Tablero()
         
 
-#ZONA DE JUEGO#
-jugador1 = Jugador()
-jugador1.tablero_propio.colocar_barco(Barco(3), 0, 0,"H")
 
-print("Tablero del jugador")
-for fila in jugador1.tablero_propio.celdas:
-    print (fila)
+
+
+
+
+#Prueba de IA
+cpu = Jugador()
+#Lista de barcos tipicos
+flota = [5, 4, 3, 3, 2]
+print("Generando flota enemiga...")
+for longitud in flota:
+    cpu.tablero_propio.colocar_aleatorio(longitud)
+    print("Tablero CPU")
+    for fila in cpu.tablero_propio.celdas:
+        print(fila)
+
+
+
+
+
+
+
+
+
+
+
+#ZONA DE JUEGO#
+#jugador1 = Jugador()
+#jugador1.tablero_propio.colocar_barco(Barco(3), 0, 0,"H")
+
+#print("Tablero del jugador")
+#for fila in jugador1.tablero_propio.celdas:
+  #  print (fila)
     
-print ("Disparo")
-jugador1.tablero_propio.disparar(0, 0)
-print ("Despues del disparo")
-for fila in jugador1.tablero_propio.celdas:
-    print(fila)
+#print ("Disparo")
+#jugador1.tablero_propio.disparar(0, 0)
+#print ("Despues del disparo")
+#for fila in jugador1.tablero_propio.celdas:
+#    print(fila)
 
