@@ -6,9 +6,12 @@ Descripción: Juego de Buscaminas sin interfaz gráfica, solo por consola
 """
 
 import random
+import time
+import json
+import os
 
 # =====================================================================
-# PARTE 1: CONFIGURACIÓN DEL JUEGO
+# PARTE 1: CONFIGURACIÓN DEL JUEGO Y COLORES
 # =====================================================================
 # Estas variables se configuran según el nivel de dificultad elegido
 FILAS = 8          # Número de filas del tablero (se ajusta según dificultad)
@@ -20,6 +23,40 @@ DIFICULTADES = {
     '1': {'nombre': 'Fácil', 'filas': 6, 'columnas': 6, 'minas': 5},
     '2': {'nombre': 'Medio', 'filas': 8, 'columnas': 8, 'minas': 10},
     '3': {'nombre': 'Difícil', 'filas': 12, 'columnas': 12, 'minas': 20}
+}
+
+# Archivo para guardar puntuaciones
+ARCHIVO_PUNTUACIONES = 'puntuaciones.json'
+
+# Colores ANSI para mejorar la visualización
+class Colores:
+    """Clase con códigos de colores ANSI para la consola"""
+    RESET = '\033[0m'
+    BOLD = '\033[1m'
+    # Colores de texto
+    ROJO = '\033[91m'
+    VERDE = '\033[92m'
+    AMARILLO = '\033[93m'
+    AZUL = '\033[94m'
+    MAGENTA = '\033[95m'
+    CIAN = '\033[96m'
+    BLANCO = '\033[97m'
+    GRIS = '\033[90m'
+    # Fondos
+    BG_ROJO = '\033[101m'
+    BG_VERDE = '\033[102m'
+    BG_AMARILLO = '\033[103m'
+
+# Mapeo de números a colores
+COLORES_NUMEROS = {
+    '1': Colores.AZUL,
+    '2': Colores.VERDE,
+    '3': Colores.ROJO,
+    '4': Colores.MAGENTA,
+    '5': Colores.AMARILLO,
+    '6': Colores.CIAN,
+    '7': Colores.BLANCO,
+    '8': Colores.GRIS
 }
 
 
@@ -130,23 +167,41 @@ def crear_tablero_visible():
 # =====================================================================
 def mostrar_tablero(tablero_visible):
     """
-    Muestra el tablero en la consola con formato legible.
+    Muestra el tablero en la consola con formato legible y colores.
     Incluye números de fila y columna para facilitar la jugada.
     
     Args:
         tablero_visible (list): El tablero que ve el jugador
     """
-    print("\n   ", end="")
-    # Muestra los números de columna
-    for col in range(COLUMNAS):
-        print(f"{col}  ", end="")
-    print()
+    # Calcula el ancho necesario para los números de fila (máximo 2 dígitos)
+    ancho_fila = len(str(FILAS - 1))
     
-    # Muestra cada fila con su número
+    # Muestra el encabezado con números de columna
+    print("\n" + Colores.CIAN + " " * (ancho_fila + 1), end="")
+    for col in range(COLUMNAS):
+        print(f"{Colores.BOLD}{col:2d}{Colores.RESET}{Colores.CIAN} ", end="")
+    print(Colores.RESET)
+    
+    # Muestra cada fila con su número y colores
     for i, fila in enumerate(tablero_visible):
-        print(f"{i}  ", end="")
+        # Número de fila con ancho fijo
+        print(f"{Colores.CIAN}{Colores.BOLD}{i:2d}{Colores.RESET} ", end="")
         for celda in fila:
-            print(f"{celda}  ", end="")
+            if celda == '#':
+                # Celda cubierta en gris
+                print(f"{Colores.GRIS}{celda}{Colores.RESET}  ", end="")
+            elif celda == '*':
+                # Mina en rojo con fondo
+                print(f"{Colores.BG_ROJO}{Colores.BLANCO}{celda}{Colores.RESET}  ", end="")
+            elif celda == ' ':
+                # Celda vacía
+                print(f"{celda}  ", end="")
+            elif celda in COLORES_NUMEROS:
+                # Número con color específico
+                color = COLORES_NUMEROS[celda]
+                print(f"{color}{Colores.BOLD}{celda}{Colores.RESET}  ", end="")
+            else:
+                print(f"{celda}  ", end="")
         print()
     print()
 
@@ -156,8 +211,9 @@ def mostrar_tablero(tablero_visible):
 # =====================================================================
 def descubrir_celda(tablero, tablero_visible, fila, columna):
     """
-    Descubre una celda en el tablero visible.
+    Descubre una celda en el tablero visible (VERSION ITERATIVA).
     Si la celda tiene 0 minas adyacentes, descubre también las celdas vecinas.
+    Usa una pila en lugar de recursión para evitar límites de profundidad.
     
     Args:
         tablero (list): El tablero real con minas y números
@@ -168,7 +224,7 @@ def descubrir_celda(tablero, tablero_visible, fila, columna):
     Returns:
         bool: True si se descubrió exitosamente, False si había una mina
     """
-    # Verifica que la celda esté dentro del tablero
+    # Verifica que la celda inicial esté dentro del tablero
     if fila < 0 or fila >= FILAS or columna < 0 or columna >= COLUMNAS:
         return True
     
@@ -180,19 +236,30 @@ def descubrir_celda(tablero, tablero_visible, fila, columna):
     if tablero[fila][columna] == -1:
         return False
     
-    # Descubre la celda mostrando el número de minas adyacentes
-    tablero_visible[fila][columna] = str(tablero[fila][columna])
+    # Usa una pila para procesar celdas iterativamente
+    pila = [(fila, columna)]
     
-    # Si no hay minas adyacentes, descubre automáticamente las celdas vecinas
-    if tablero[fila][columna] == 0:
-        tablero_visible[fila][columna] = ' '  # Muestra espacio vacío
+    while pila:
+        f, c = pila.pop()
         
-        # Descubre las 8 celdas adyacentes recursivamente
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                if i != 0 or j != 0:  # No procesa la celda actual
-                    descubrir_celda(tablero, tablero_visible, 
-                                  fila + i, columna + j)
+        # Verifica límites y si ya está descubierta
+        if f < 0 or f >= FILAS or c < 0 or c >= COLUMNAS:
+            continue
+        if tablero_visible[f][c] != '#':
+            continue
+        
+        # Descubre la celda mostrando el número de minas adyacentes
+        valor = tablero[f][c]
+        
+        if valor == 0:
+            tablero_visible[f][c] = ' '  # Muestra espacio vacío
+            # Añade las 8 celdas adyacentes a la pila
+            for i in range(-1, 2):
+                for j in range(-1, 2):
+                    if i != 0 or j != 0:  # No procesa la celda actual
+                        pila.append((f + i, c + j))
+        else:
+            tablero_visible[f][c] = str(valor)
     
     return True
 
@@ -242,6 +309,125 @@ def mostrar_minas(tablero, tablero_visible):
 
 
 # =====================================================================
+# PARTE 9B: FUNCIONES AUXILIARES
+# =====================================================================
+def proteger_primera_jugada(tablero, fila, columna):
+    """
+    Asegura que la primera jugada nunca sea una mina.
+    Si hay una mina en la posición seleccionada, la mueve a otra posición.
+    
+    Args:
+        tablero (list): El tablero real con minas
+        fila (int): Fila de la primera jugada
+        columna (int): Columna de la primera jugada
+    """
+    if tablero[fila][columna] == -1:
+        # La primera jugada es una mina, la movemos a otra posición
+        tablero[fila][columna] = 0
+        
+        # Busca una nueva posición para la mina
+        while True:
+            nueva_fila = random.randint(0, FILAS - 1)
+            nueva_columna = random.randint(0, COLUMNAS - 1)
+            
+            # Asegura que no sea la posición inicial ni ya tenga una mina
+            if (nueva_fila != fila or nueva_columna != columna) and tablero[nueva_fila][nueva_columna] != -1:
+                tablero[nueva_fila][nueva_columna] = -1
+                break
+        
+        # Recalcula los números después de mover la mina
+        calcular_numeros(tablero)
+
+
+def cargar_puntuaciones():
+    """
+    Carga las puntuaciones (mejores tiempos) desde el archivo JSON.
+    
+    Returns:
+        dict: Diccionario con las mejores puntuaciones por dificultad
+    """
+    if os.path.exists(ARCHIVO_PUNTUACIONES):
+        try:
+            with open(ARCHIVO_PUNTUACIONES, 'r') as f:
+                return json.load(f)
+        except:
+            return {}
+    return {}
+
+
+def guardar_puntuacion(nombre_dificultad, tiempo):
+    """
+    Guarda una nueva puntuación si es mejor que la anterior.
+    
+    Args:
+        nombre_dificultad (str): Nombre del nivel de dificultad
+        tiempo (float): Tiempo en segundos que tardó el jugador
+    
+    Returns:
+        bool: True si es un nuevo récord, False si no
+    """
+    puntuaciones = cargar_puntuaciones()
+    
+    es_record = False
+    if nombre_dificultad not in puntuaciones or tiempo < puntuaciones[nombre_dificultad]:
+        puntuaciones[nombre_dificultad] = tiempo
+        es_record = True
+        
+        try:
+            with open(ARCHIVO_PUNTUACIONES, 'w') as f:
+                json.dump(puntuaciones, f, indent=4)
+        except:
+            pass
+    
+    return es_record
+
+
+def mostrar_ayuda():
+    """
+    Muestra la ayuda del juego con todos los comandos disponibles.
+    """
+    print("\n" + "=" * 50)
+    print(f"{Colores.AMARILLO}{Colores.BOLD}     📚 AYUDA DEL JUEGO{Colores.RESET}")
+    print("=" * 50)
+    print(f"\n{Colores.CIAN}Comandos disponibles:{Colores.RESET}")
+    print(f"  • {Colores.VERDE}Números{Colores.RESET}: Introduce fila y columna para descubrir")
+    print(f"  • {Colores.VERDE}'ayuda'{Colores.RESET}: Muestra esta ayuda")
+    print(f"  • {Colores.VERDE}'pista'{Colores.RESET}: Revela una celda segura aleatoria")
+    print(f"  • {Colores.VERDE}'rendirse'{Colores.RESET}: Termina el juego actual")
+    print(f"  • {Colores.VERDE}'salir'{Colores.RESET}: Sale del juego completamente")
+    print(f"\n{Colores.CIAN}Símbolos en el tablero:{Colores.RESET}")
+    print(f"  • {Colores.GRIS}#{Colores.RESET} = Celda cubierta")
+    print(f"  • {Colores.AZUL}1-8{Colores.RESET} = Número de minas adyacentes")
+    print(f"  • {Colores.BLANCO} {Colores.RESET} = Celda vacía (sin minas cerca)")
+    print(f"  • {Colores.BG_ROJO}*{Colores.RESET} = Mina (solo visible al perder)")
+    print("=" * 50 + "\n")
+
+
+def obtener_celda_segura(tablero, tablero_visible):
+    """
+    Encuentra una celda segura (sin mina) que aún no ha sido descubierta.
+    
+    Args:
+        tablero (list): El tablero real con minas
+        tablero_visible (list): El tablero que ve el jugador
+    
+    Returns:
+        tuple: (fila, columna) de una celda segura, o None si no hay
+    """
+    celdas_seguras = []
+    
+    for fila in range(FILAS):
+        for columna in range(COLUMNAS):
+            # Si la celda está cubierta y no tiene mina
+            if tablero_visible[fila][columna] == '#' and tablero[fila][columna] != -1:
+                celdas_seguras.append((fila, columna))
+    
+    if celdas_seguras:
+        return random.choice(celdas_seguras)
+    return None
+
+
+# =====================================================================
 # PARTE 10: FUNCIÓN PARA MOSTRAR MENÚ DE DIFICULTAD
 # =====================================================================
 def menu_dificultad():
@@ -278,8 +464,9 @@ def menu_dificultad():
 # =====================================================================
 def jugar(filas, columnas, num_minas, nombre_dificultad):
     """
-    Función principal que ejecuta el juego de Buscaminas.
+    Función principal que ejecuta el juego de Buscaminas (MEJORADA).
     Controla el flujo del juego: inicialización, turnos y fin del juego.
+    Incluye: cronómetro, protección primera jugada, comandos especiales y puntuaciones.
     
     Args:
         filas (int): Número de filas del tablero
@@ -293,17 +480,23 @@ def jugar(filas, columnas, num_minas, nombre_dificultad):
     COLUMNAS = columnas
     NUM_MINAS = num_minas
     
+    # Muestra las mejores puntuaciones si existen
+    puntuaciones = cargar_puntuaciones()
+    
     print("\n" + "=" * 50)
-    print("     🎯 BUSCAMINAS - JUEGO EN CONSOLA")
+    print(f"{Colores.AMARILLO}{Colores.BOLD}     🎯 BUSCAMINAS - JUEGO EN CONSOLA{Colores.RESET}")
     print("=" * 50)
-    print(f"Dificultad: {nombre_dificultad}")
-    print(f"Tablero: {FILAS}x{COLUMNAS}")
-    print(f"Número de minas: {NUM_MINAS}")
-    print("\nInstrucciones:")
-    print("- Introduce fila y columna para descubrir una celda")
-    print("- '#' = celda cubierta")
-    print("- Números = cantidad de minas adyacentes")
-    print("- ' ' = celda vacía (sin minas cerca)")
+    print(f"{Colores.CIAN}Dificultad:{Colores.RESET} {Colores.BOLD}{nombre_dificultad}{Colores.RESET}")
+    print(f"{Colores.CIAN}Tablero:{Colores.RESET} {FILAS}x{COLUMNAS}")
+    print(f"{Colores.CIAN}Número de minas:{Colores.RESET} {Colores.ROJO}{NUM_MINAS}{Colores.RESET}")
+    
+    if nombre_dificultad in puntuaciones:
+        mejor_tiempo = puntuaciones[nombre_dificultad]
+        minutos = int(mejor_tiempo // 60)
+        segundos = int(mejor_tiempo % 60)
+        print(f"{Colores.VERDE}🏆 Mejor tiempo:{Colores.RESET} {minutos:02d}:{segundos:02d}")
+    
+    print(f"\n{Colores.AMARILLO}💡 Escribe 'ayuda' para ver todos los comandos{Colores.RESET}")
     print("=" * 50)
     
     # INICIALIZACIÓN DEL JUEGO
@@ -313,54 +506,114 @@ def jugar(filas, columnas, num_minas, nombre_dificultad):
     tablero_visible = crear_tablero_visible()    # Crea tablero visible al jugador
     
     juego_activo = True
+    primera_jugada = True
+    tiempo_inicio = time.time()  # Inicia el cronómetro
     
     # BUCLE PRINCIPAL DEL JUEGO
     while juego_activo:
         mostrar_tablero(tablero_visible)
         
+        # Muestra el tiempo transcurrido
+        tiempo_actual = time.time() - tiempo_inicio
+        minutos = int(tiempo_actual // 60)
+        segundos = int(tiempo_actual % 60)
+        print(f"{Colores.CIAN}⏱️  Tiempo: {minutos:02d}:{segundos:02d}{Colores.RESET}\n")
+        
         # Solicita entrada del jugador
         try:
-            fila = int(input("Introduce fila (0-" + str(FILAS-1) + "): "))
-            columna = int(input("Introduce columna (0-" + str(COLUMNAS-1) + "): "))
+            entrada = input(f"{Colores.VERDE}Introduce fila (0-{FILAS-1}) o comando: {Colores.RESET}").strip().lower()
+            
+            # Procesa comandos especiales
+            if entrada == 'ayuda':
+                mostrar_ayuda()
+                continue
+            elif entrada == 'pista':
+                celda_segura = obtener_celda_segura(tablero, tablero_visible)
+                if celda_segura:
+                    fila, columna = celda_segura
+                    print(f"\n{Colores.VERDE}💡 Pista: La celda ({fila}, {columna}) es segura{Colores.RESET}\n")
+                    # Descubre automáticamente la celda
+                    if primera_jugada:
+                        primera_jugada = False
+                    descubrir_celda(tablero, tablero_visible, fila, columna)
+                else:
+                    print(f"\n{Colores.AMARILLO}⚠️  No hay más celdas seguras disponibles{Colores.RESET}\n")
+                continue
+            elif entrada == 'rendirse':
+                print(f"\n{Colores.AMARILLO}😔 Te has rendido. Aquí está el tablero completo:{Colores.RESET}")
+                mostrar_minas(tablero, tablero_visible)
+                mostrar_tablero(tablero_visible)
+                juego_activo = False
+                break
+            elif entrada == 'salir':
+                print(f"\n{Colores.CIAN}👋 ¡Hasta luego!{Colores.RESET}\n")
+                return
+            
+            # Procesa entrada numérica (fila)
+            fila = int(entrada)
+            columna = int(input(f"{Colores.VERDE}Introduce columna (0-{COLUMNAS-1}): {Colores.RESET}").strip())
             
             # Valida que la entrada esté dentro del rango
             if fila < 0 or fila >= FILAS or columna < 0 or columna >= COLUMNAS:
-                print("\n❌ Posición fuera del tablero. Intenta de nuevo.\n")
+                print(f"\n{Colores.ROJO}❌ Posición fuera del tablero. Intenta de nuevo.{Colores.RESET}\n")
                 continue
             
             # Verifica si la celda ya está descubierta
             if tablero_visible[fila][columna] != '#':
-                print("\n⚠️  Esta celda ya está descubierta. Elige otra.\n")
+                print(f"\n{Colores.AMARILLO}⚠️  Esta celda ya está descubierta. Elige otra.{Colores.RESET}\n")
                 continue
+            
+            # Protección de primera jugada: asegura que no sea una mina
+            if primera_jugada:
+                proteger_primera_jugada(tablero, fila, columna)
+                primera_jugada = False
             
             # Descubre la celda seleccionada
             exito = descubrir_celda(tablero, tablero_visible, fila, columna)
             
             # Si pisó una mina, pierde
             if not exito:
+                tiempo_final = time.time() - tiempo_inicio
                 print("\n" + "=" * 40)
-                print("     💣 ¡BOOM! Has pisado una mina")
+                print(f"{Colores.ROJO}{Colores.BOLD}     💣 ¡BOOM! Has pisado una mina{Colores.RESET}")
                 print("=" * 40)
                 mostrar_minas(tablero, tablero_visible)
                 mostrar_tablero(tablero_visible)
-                print("❌ ¡GAME OVER! Has perdido.\n")
+                
+                minutos = int(tiempo_final // 60)
+                segundos = int(tiempo_final % 60)
+                print(f"{Colores.ROJO}❌ ¡GAME OVER! Has perdido.{Colores.RESET}")
+                print(f"{Colores.CIAN}⏱️  Tiempo de juego: {minutos:02d}:{segundos:02d}{Colores.RESET}\n")
                 juego_activo = False
             
             # Verifica si ganó
             elif verificar_victoria(tablero_visible):
+                tiempo_final = time.time() - tiempo_inicio
                 print("\n" + "=" * 40)
-                print("     🎉 ¡FELICIDADES!")
+                print(f"{Colores.VERDE}{Colores.BOLD}     🎉 ¡FELICIDADES!{Colores.RESET}")
                 print("=" * 40)
                 mostrar_tablero(tablero_visible)
-                print("✅ ¡Has ganado! Encontraste todas las celdas seguras.\n")
+                
+                minutos = int(tiempo_final // 60)
+                segundos = int(tiempo_final % 60)
+                print(f"{Colores.VERDE}✅ ¡Has ganado! Encontraste todas las celdas seguras.{Colores.RESET}")
+                print(f"{Colores.CIAN}⏱️  Tiempo final: {minutos:02d}:{segundos:02d}{Colores.RESET}")
+                
+                # Guarda la puntuación
+                es_record = guardar_puntuacion(nombre_dificultad, tiempo_final)
+                if es_record:
+                    print(f"{Colores.AMARILLO}{Colores.BOLD}🏆 ¡NUEVO RÉCORD! ¡Felicidades!{Colores.RESET}\n")
+                else:
+                    print()
+                
                 juego_activo = False
         
         except ValueError:
-            print("\n❌ Entrada inválida. Debes introducir números.\n")
+            print(f"\n{Colores.ROJO}❌ Entrada inválida. Introduce números o comandos válidos.{Colores.RESET}\n")
     
     # Pregunta si quiere jugar de nuevo
-    jugar_otra = input("¿Quieres jugar otra vez? (s/n): ")
-    if jugar_otra.lower() == 's':
+    jugar_otra = input(f"\n{Colores.VERDE}¿Quieres jugar otra vez? (s/n): {Colores.RESET}").strip().lower()
+    if jugar_otra == 's':
         # Permite elegir dificultad de nuevo
         config = menu_dificultad()
         jugar(config['filas'], config['columnas'], config['minas'], config['nombre'])
