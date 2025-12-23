@@ -191,19 +191,19 @@ def mostrar_tablero(tablero_visible):
         for celda in fila:
             if celda == '#':
                 # Celda cubierta en gris
-                print(f"{Colores.GRIS}{celda}{Colores.RESET}  ", end="")
+                print(f" {Colores.GRIS}{celda}{Colores.RESET} ", end="")
             elif celda == '*':
                 # Mina en rojo con fondo
-                print(f"{Colores.BG_ROJO}{Colores.BLANCO}{celda}{Colores.RESET}  ", end="")
+                print(f" {Colores.BG_ROJO}{Colores.BLANCO}{celda}{Colores.RESET} ", end="")
             elif celda == ' ':
                 # Celda vacía
-                print(f"{celda}  ", end="")
+                print(f" {celda} ", end="")
             elif celda in COLORES_NUMEROS:
                 # Número con color específico
                 color = COLORES_NUMEROS[celda]
-                print(f"{color}{Colores.BOLD}{celda}{Colores.RESET}  ", end="")
+                print(f" {color}{Colores.BOLD}{celda}{Colores.RESET} ", end="")
             else:
-                print(f"{celda}  ", end="")
+                print(f" {celda} ", end="")
         print()
     print()
 

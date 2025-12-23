@@ -248,38 +248,52 @@ if verificar_victoria(tablero_visible):
 
 **Resultado**: Ahora el juego detecta correctamente la victoria independientemente de si la última celda se descubre manualmente o mediante pista.
 
+### 2. Desalineación de Tablero en Modo Difícil 🔧
+**Problema**: En el modo Difícil (12x12), las celdas (`#`, números, etc.) no estaban alineadas correctamente bajo los números de columna.
+
+**Causa**: Los símbolos de celda estaban alineados a la **izquierda** (`"#  "` = símbolo + 2 espacios), mientras que los números de columna estaban alineados a la **derecha** (`" 0 "` = espacio + dígito + espacio), causando desalineación visual especialmente notoria en tableros grandes.
+
+**Solución**: Se cambió el espaciado de todas las celdas para **centrar** los símbolos:
+```python
+# ANTES: Alineado a la izquierda
+print(f"{Colores.GRIS}{celda}{Colores.RESET}  ", end="")  # "#  "
+
+# DESPUÉS: Centrado
+print(f" {Colores.GRIS}{celda}{Colores.RESET} ", end="")  # " # "
+```
+
+**Afecta a**: Líneas 192-206 de `mostrar_tablero()` - todas las impresiones de celdas (`#`, `*`, números, espacios vacíos)
+
+**Resultado**: Ahora todos los símbolos están perfectamente **centrados** bajo los números de columna en todos los niveles de dificultad (Fácil, Medio, Difícil).
+
 ---
 
 ## 🔧 Mejoras Técnicas
 
 ### 1. Algoritmo Iterativo vs Recursivo
-**Antes**: Usaba recursión para expandir celdas vacías
-**Ahora**: Usa una pila (stack) para iteración
+**Antes**: Usaba recursión para expandir celdas vacías  
+**Ahora**: Usa una pila (stack) para iteración  
 **Beneficio**: Sin límites de profundidad, mejor rendimiento
 
 ### 2. Protección de Primera Jugada
-**Problema Original**: Podías perder en el primer click
-**Solución**: Si la primera celda tiene mina, se mueve automáticamente
+**Problema Original**: Podías perder en el primer click  
+**Solución**: Si la primera celda tiene mina, se mueve automáticamente  
 **Resultado**: Experiencia más justa
 
 ### 3. Sistema de Colores
-**Antes**: Todo en blanco y negro
-**Ahora**: Colores ANSI para mejor visualización
+**Antes**: Todo en blanco y negro  
+**Ahora**: Colores ANSI para mejor visualización  
 **Mejora**: Más fácil identificar patrones
 
 ### 4. Persistencia de Datos
-**Nuevo**: Sistema JSON para guardar récords
-**Ubicación**: `puntuaciones.json` en el mismo directorio
+**Nuevo**: Sistema JSON para guardar récords  
+**Ubicación**: `puntuaciones.json` en el mismo directorio  
 **Beneficio**: Competición contra tus mejores tiempos
 
-### 5. Corrección de Alineación en Tablero 🔧
-**Problema**: En el modo Difícil (12x12), las filas 10 y 11 tenían espaciado incorrecto
-**Causa**: Los números de dos dígitos ocupaban más espacio que los de un dígito
-**Solución**: 
-- Formato con ancho fijo usando `{numero:2d}` 
-- Espaciado dinámico del encabezado según tamaño del tablero
-- Todos los números ahora ocupan exactamente 2 caracteres
-**Resultado**: Alineación perfecta en todos los niveles de dificultad
+### 5. Alineación Perfecta del Tablero
+**Mejora**: Patrón de espaciado consistente y simétrico  
+**Implementación**: Todos los elementos usan 3 caracteres de ancho fijo con símbolo centrado  
+**Resultado**: Alineación perfecta en todos los niveles, especialmente visible en tableros grandes (12x12)
 
 ---
 
