@@ -446,7 +446,15 @@ def menu_dificultad():
     print("  1️⃣  FÁCIL    -  Tablero 6x6   -  5 minas")
     print("  2️⃣  MEDIO    -  Tablero 8x8   - 10 minas")
     print("  3️⃣  DIFÍCIL  -  Tablero 12x12 - 20 minas")
-    print("\n" + "=" * 50)
+    print("\n" + "-" * 50)
+    print(f"{Colores.AMARILLO}📌 COMANDOS DURANTE EL JUEGO:{Colores.RESET}")
+    print(f"  • {Colores.VERDE}'ayuda'{Colores.RESET}    → Ver todos los comandos y símbolos")
+    print(f"  • {Colores.VERDE}'pista'{Colores.RESET}    → Revelar una celda segura")
+    print(f"  • {Colores.VERDE}'rendirse'{Colores.RESET} → Abandonar la partida actual")
+    print(f"  • {Colores.VERDE}'salir'{Colores.RESET}    → Cerrar el juego completamente")
+    print("-" * 50)
+    print(f"{Colores.CIAN}💡 Introduce fila y columna para descubrir celdas{Colores.RESET}")
+    print("=" * 50)
     
     while True:
         opcion = input("\n👉 Selecciona (1/2/3): ").strip()
@@ -538,6 +546,29 @@ def jugar(filas, columnas, num_minas, nombre_dificultad):
                     if primera_jugada:
                         primera_jugada = False
                     descubrir_celda(tablero, tablero_visible, fila, columna)
+                    
+                    # Verifica si ganó después de usar la pista
+                    if verificar_victoria(tablero_visible):
+                        tiempo_final = time.time() - tiempo_inicio
+                        print("\n" + "=" * 40)
+                        print(f"{Colores.VERDE}{Colores.BOLD}     🎉 ¡FELICIDADES!{Colores.RESET}")
+                        print("=" * 40)
+                        mostrar_tablero(tablero_visible)
+                        
+                        minutos = int(tiempo_final // 60)
+                        segundos = int(tiempo_final % 60)
+                        print(f"{Colores.VERDE}✅ ¡Has ganado! Encontraste todas las celdas seguras.{Colores.RESET}")
+                        print(f"{Colores.CIAN}⏱️  Tiempo final: {minutos:02d}:{segundos:02d}{Colores.RESET}")
+                        
+                        # Guarda la puntuación
+                        es_record = guardar_puntuacion(nombre_dificultad, tiempo_final)
+                        if es_record:
+                            print(f"{Colores.AMARILLO}{Colores.BOLD}🏆 ¡NUEVO RÉCORD! ¡Felicidades!{Colores.RESET}\n")
+                        else:
+                            print()
+                        
+                        juego_activo = False
+                        break
                 else:
                     print(f"\n{Colores.AMARILLO}⚠️  No hay más celdas seguras disponibles{Colores.RESET}\n")
                 continue

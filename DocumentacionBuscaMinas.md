@@ -29,6 +29,7 @@ Lo que ve el jugador:
 | `guardar_puntuacion()` | 🆕 Guarda récord si es mejor tiempo |
 | `mostrar_ayuda()` | 🆕 Muestra todos los comandos disponibles |
 | `obtener_celda_segura()` | 🆕 Encuentra celda sin mina para pistas |
+| `jugar()` verifica victoria post-pista | 🔧 Detecta victoria después de usar pista |
 | `menu_dificultad()` | Muestra menú de niveles |
 | `jugar()` | 🆕 **MEJORADA** - Función principal con cronómetro y comandos |
 
@@ -224,6 +225,28 @@ Almacena los mejores tiempos por dificultad:
     "Difícil": 289.45
 }
 ```
+
+---
+
+## 🐛 Bugs Corregidos
+
+### 1. Victoria No Detectada con Pistas 🔧
+**Problema**: Al usar el comando `pista` para descubrir las últimas celdas seguras, el juego no detectaba la victoria automáticamente. El jugador tenía que introducir coordenadas y pisar una mina para terminar el juego.
+
+**Causa**: La función `jugar()` llamaba a `descubrir_celda()` después de usar una pista, pero no verificaba si se había ganado el juego.
+
+**Solución**: Se añadió la verificación `verificar_victoria()` después de descubrir una celda mediante pista, con el mismo flujo de victoria que las jugadas normales:
+```python
+if verificar_victoria(tablero_visible):
+    # Muestra mensaje de victoria
+    # Calcula tiempo final
+    # Guarda puntuación
+    # Notifica si es récord
+    juego_activo = False
+    break
+```
+
+**Resultado**: Ahora el juego detecta correctamente la victoria independientemente de si la última celda se descubre manualmente o mediante pista.
 
 ---
 
