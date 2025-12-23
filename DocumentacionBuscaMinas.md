@@ -1,4 +1,4 @@
-# 📚 DOCUMENTACIÓN BUSCAMINAS - VERSIÓN MEJORADA
+# 📚 DOCUMENTACIÓN BUSCAMINAS
 
 ## 🎯 Conceptos Clave
 
