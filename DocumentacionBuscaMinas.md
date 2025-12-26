@@ -154,7 +154,7 @@ Muestra todas las minas cuando pierdes
 ### Parte 9B: Funciones Auxiliares
 - **`proteger_primera_jugada()`**: Mueve mina si primera jugada la toca
 - **`cargar_puntuaciones()`**: Lee mejores tiempos desde `puntuaciones.json`
-- **`guardar_puntuacion()`**: Guarda nuevo récord si aplica
+- **`guardar_puntuacion()`**: Guarda nuevo récord (redondeado a 2 decimales) con codificación UTF-8
 - **`mostrar_ayuda()`**: Muestra pantalla de ayuda completa
 - **`obtener_celda_segura()`**: Encuentra celda sin mina para pistas
 
@@ -217,7 +217,7 @@ Inicia el programa mostrando el menú de dificultad
 ## 📁 Archivos Generados
 
 ### `puntuaciones.json`
-Almacena los mejores tiempos por dificultad:
+Almacena los mejores tiempos por dificultad (redondeados a 2 decimales, codificación UTF-8):
 ```json
 {
     "Fácil": 45.23,
@@ -225,6 +225,8 @@ Almacena los mejores tiempos por dificultad:
     "Difícil": 289.45
 }
 ```
+
+> **Nota**: Se usa `ensure_ascii=False` para que los nombres con tilde (Fácil, Difícil) se muestren correctamente en lugar de códigos escape como `F\u00e1cil`.
 
 ---
 
@@ -248,23 +250,42 @@ if verificar_victoria(tablero_visible):
 
 **Resultado**: Ahora el juego detecta correctamente la victoria independientemente de si la última celda se descubre manualmente o mediante pista.
 
-### 2. Desalineación de Tablero en Modo Difícil 🔧
-**Problema**: En el modo Difícil (12x12), las celdas (`#`, números, etc.) no estaban alineadas correctamente bajo los números de columna.
+### 2. Desalineación de Tablero en Modos Fácil y Medio 🔧
+**Problema**: En los modos Fácil (6x6) y Medio (8x8), las columnas no estaban alineadas correctamente con el encabezado.
 
-**Causa**: Los símbolos de celda estaban alineados a la **izquierda** (`"#  "` = símbolo + 2 espacios), mientras que los números de columna estaban alineados a la **derecha** (`" 0 "` = espacio + dígito + espacio), causando desalineación visual especialmente notoria en tableros grandes.
+**Causa**: El margen inicial del encabezado usaba un cálculo dinámico `" " * (ancho_fila + 1)` que daba 2 espacios en tableros pequeños, pero los números de fila usaban formato `:2d` + espacio = 3 caracteres.
 
-**Solución**: Se cambió el espaciado de todas las celdas para **centrar** los símbolos:
+**Solución**: Se cambió a un margen fijo de 3 espacios que coincide con el ancho de los números de fila:
 ```python
-# ANTES: Alineado a la izquierda
-print(f"{Colores.GRIS}{celda}{Colores.RESET}  ", end="")  # "#  "
+# ANTES: Margen dinámico (causaba desalineación)
+print("\n" + Colores.CIAN + " " * (ancho_fila + 1), end="")
 
-# DESPUÉS: Centrado
-print(f" {Colores.GRIS}{celda}{Colores.RESET} ", end="")  # " # "
+# DESPUÉS: Margen fijo de 3 espacios
+print("\n" + Colores.CIAN + "   ", end="")
 ```
 
-**Afecta a**: Líneas 192-206 de `mostrar_tablero()` - todas las impresiones de celdas (`#`, `*`, números, espacios vacíos)
+**Resultado**: Ahora todos los tableros están perfectamente alineados en todos los niveles de dificultad (Fácil, Medio, Difícil).
 
-**Resultado**: Ahora todos los símbolos están perfectamente **centrados** bajo los números de columna en todos los niveles de dificultad (Fácil, Medio, Difícil).
+### 3. Precisión de Tiempos en JSON 🔧
+**Problema**: Los tiempos se guardaban con muchos decimales (ej: `12.77432966232299`).
+
+**Solución**: Se redondea a 2 decimales antes de guardar:
+```python
+tiempo_redondeado = round(tiempo, 2)
+```
+
+**Resultado**: Los tiempos ahora se muestran legibles (ej: `12.56`).
+
+### 4. Codificación de Caracteres en JSON 🔧
+**Problema**: Los nombres con tilde aparecían como códigos escape (ej: `F\u00e1cil` en lugar de `Fácil`).
+
+**Solución**: Se añadió codificación UTF-8 y `ensure_ascii=False`:
+```python
+with open(ARCHIVO_PUNTUACIONES, 'w', encoding='utf-8') as f:
+    json.dump(puntuaciones, f, indent=4, ensure_ascii=False)
+```
+
+**Resultado**: Los nombres se muestran correctamente con tildes (`Fácil`, `Difícil`).
 
 ---
 
@@ -291,9 +312,14 @@ print(f" {Colores.GRIS}{celda}{Colores.RESET} ", end="")  # " # "
 **Beneficio**: Competición contra tus mejores tiempos
 
 ### 5. Alineación Perfecta del Tablero
-**Mejora**: Patrón de espaciado consistente y simétrico  
-**Implementación**: Todos los elementos usan 3 caracteres de ancho fijo con símbolo centrado  
-**Resultado**: Alineación perfecta en todos los niveles, especialmente visible en tableros grandes (12x12)
+**Mejora**: Margen fijo de 3 espacios en el encabezado  
+**Implementación**: `print("\n" + Colores.CIAN + "   ", end="")` coincide con `:2d` + espacio  
+**Resultado**: Alineación perfecta en todos los niveles (Fácil, Medio, Difícil)
+
+### 6. Mejor Legibilidad de Puntuaciones
+**Mejora**: Tiempos redondeados y caracteres UTF-8  
+**Implementación**: `round(tiempo, 2)` + `ensure_ascii=False`  
+**Resultado**: `"Fácil": 12.56` en lugar de `"F\u00e1cil": 12.77432966232299`
 
 ---
 

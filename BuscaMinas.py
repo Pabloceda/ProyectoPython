@@ -175,11 +175,9 @@ def mostrar_tablero(tablero_visible):
     Args:
         tablero_visible (list): El tablero que ve el jugador
     """
-    # Calcula el ancho necesario para los números de fila (máximo 2 dígitos)
-    ancho_fila = len(str(FILAS - 1))
-    
     # Muestra el encabezado con números de columna
-    print("\n" + Colores.CIAN + " " * (ancho_fila + 1), end="")
+    # Usamos 3 espacios para alinear con los números de fila (2 dígitos + 1 espacio)
+    print("\n" + Colores.CIAN + "   ", end="")
     for col in range(COLUMNAS):
         print(f"{Colores.BOLD}{col:2d}{Colores.RESET}{Colores.CIAN} ", end="")
     print(Colores.RESET)
@@ -371,13 +369,15 @@ def guardar_puntuacion(nombre_dificultad, tiempo):
     puntuaciones = cargar_puntuaciones()
     
     es_record = False
-    if nombre_dificultad not in puntuaciones or tiempo < puntuaciones[nombre_dificultad]:
-        puntuaciones[nombre_dificultad] = tiempo
+    # Redondea el tiempo a 2 decimales para mejor legibilidad
+    tiempo_redondeado = round(tiempo, 2)
+    if nombre_dificultad not in puntuaciones or tiempo_redondeado < puntuaciones[nombre_dificultad]:
+        puntuaciones[nombre_dificultad] = tiempo_redondeado
         es_record = True
         
         try:
-            with open(ARCHIVO_PUNTUACIONES, 'w') as f:
-                json.dump(puntuaciones, f, indent=4)
+            with open(ARCHIVO_PUNTUACIONES, 'w', encoding='utf-8') as f:
+                json.dump(puntuaciones, f, indent=4, ensure_ascii=False)
         except:
             pass
     
