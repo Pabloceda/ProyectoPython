@@ -21,23 +21,23 @@ Lo que ve el jugador:
 | `crear_tablero()` | Crea matriz dinámica llena de ceros |
 | `colocar_minas()` | Coloca minas aleatoriamente (-1) |
 | `calcular_numeros()` | Cuenta minas vecinas para cada celda |
-| `descubrir_celda()` | 🆕 **ITERATIVA** - Revela celda y vecinos (sin recursión) |
+| `descubrir_celda()` | Revela celda y vecinos (sin recursión) |
 | `verificar_victoria()` | Verifica si solo quedan minas por descubrir |
 | `mostrar_minas()` | Muestra todas las minas al perder |
-| `proteger_primera_jugada()` | 🆕 Asegura que la primera jugada no sea mina |
-| `cargar_puntuaciones()` | 🆕 Carga mejores tiempos desde JSON |
-| `guardar_puntuacion()` | 🆕 Guarda récord si es mejor tiempo |
-| `mostrar_ayuda()` | 🆕 Muestra todos los comandos disponibles |
-| `obtener_celda_segura()` | 🆕 Encuentra celda sin mina para pistas |
-| `jugar()` verifica victoria post-pista | 🔧 Detecta victoria después de usar pista |
+| `proteger_primera_jugada()` | Asegura que la primera jugada no sea mina |
+| `cargar_puntuaciones()` | Carga mejores tiempos desde JSON |
+| `guardar_puntuacion()` | Guarda récord si es mejor tiempo |
+| `mostrar_ayuda()` | Muestra todos los comandos disponibles |
+| `obtener_celda_segura()` | Encuentra celda sin mina para pistas |
+| `jugar()` verifica victoria post-pista | Detecta victoria después de usar pista |
 | `menu_dificultad()` | Muestra menú de niveles |
-| `jugar()` | 🆕 **MEJORADA** - Función principal con cronómetro y comandos |
+| `jugar()` | Función principal con cronómetro y comandos |
 
 ---
 
-## 🎨 Sistema de Colores ANSI 🆕
+## 🎨 Sistema de Colores ANSI
 
-El juego ahora usa **colores** para mejorar la experiencia visual:
+El juego usa **colores** para mejorar la experiencia visual:
 
 | Elemento | Color | Descripción |
 |----------|-------|-------------|
@@ -70,14 +70,14 @@ El juego incluye **3 niveles de dificultad**:
 
 1. **Selección de dificultad**: El jugador elige nivel y ve el récord actual
 2. **Inicialización**: Crea tablero → Coloca minas → Calcula números → Inicia cronómetro
-3. **Primera jugada protegida**: 🆕 Garantiza que nunca sea una mina
+3. **Primera jugada protegida**: Garantiza que nunca sea una mina
 4. **Bucle de juego**: Muestra tablero con tiempo → Lee entrada/comando → Descubre celda → Verifica victoria/derrota
 5. **Fin**: Muestra resultado, tiempo final y si es récord nuevo
 6. **Rejugabilidad**: Permite elegir otra dificultad
 
 ---
 
-## 🎯 Comandos Especiales 🆕
+## 🎯 Comandos Especiales
 
 Durante el juego, puedes usar estos comandos:
 
@@ -93,7 +93,7 @@ Durante el juego, puedes usar estos comandos:
 
 ## ✨ Características
 
-### Características Originales
+### Características Básicas
 ✅ **Tres niveles de dificultad** con configuraciones dinámicas  
 ✅ Descubre automáticamente celdas vacías vecinas  
 ✅ Valida entradas del usuario  
@@ -101,7 +101,7 @@ Durante el juego, puedes usar estos comandos:
 ✅ Emojis y formato visual claro  
 ✅ Opción para jugar de nuevo con diferente dificultad  
 
-### Mejoras Nuevas 🆕
+### Tecnologías claves
 🎨 **Sistema de colores ANSI** - Cada número tiene su color distintivo  
 🛡️ **Protección de primera jugada** - Nunca pierdes en el primer movimiento  
 ⏱️ **Cronómetro en tiempo real** - Muestra tiempo transcurrido en formato MM:SS  
@@ -115,7 +115,7 @@ Durante el juego, puedes usar estos comandos:
 
 ## 📋 Estructura del Código (13 Partes Actualizadas)
 
-### Parte 1: Configuración y Colores 🆕
+### Parte 1: Configuración y Colores
 - Define las configuraciones de dificultad
 - **Clase `Colores`** con códigos ANSI
 - Diccionario `COLORES_NUMEROS` para mapeo
@@ -133,13 +133,13 @@ Cuenta las minas adyacentes para cada celda
 ### Parte 5: Tablero Visible
 Crea el tablero que ve el jugador (con `#` para celdas cubiertas)
 
-### Parte 6: Mostrar Tablero 🆕 MEJORADA
+### Parte 6: Mostrar Tablero
 - Imprime el tablero con **colores ANSI**
 - Números con colores distintivos
 - Coordenadas resaltadas en cian
 - Minas con fondo rojo
 
-### Parte 7: Descubrir Celda 🆕 REFACTORIZADA
+### Parte 7: Descubrir Celda
 - **Algoritmo iterativo** usando pila en lugar de recursión
 - Evita `RecursionError` en tableros grandes
 - Más eficiente en memoria
@@ -151,7 +151,7 @@ Comprueba si solo quedan las minas por descubrir (victoria)
 ### Parte 9: Mostrar Minas
 Muestra todas las minas cuando pierdes
 
-### Parte 9B: Funciones Auxiliares 🆕
+### Parte 9B: Funciones Auxiliares
 - **`proteger_primera_jugada()`**: Mueve mina si primera jugada la toca
 - **`cargar_puntuaciones()`**: Lee mejores tiempos desde `puntuaciones.json`
 - **`guardar_puntuacion()`**: Guarda nuevo récord si aplica
@@ -161,7 +161,7 @@ Muestra todas las minas cuando pierdes
 ### Parte 10: Menú de Dificultad
 Muestra opciones y permite seleccionar nivel de dificultad
 
-### Parte 11: Función Principal 🆕 AMPLIAMENTE MEJORADA
+### Parte 11: Función Principal
 - **Cronómetro en tiempo real** con `time.time()`
 - **Protección de primera jugada** automática
 - **Procesamiento de comandos especiales** (ayuda, pista, rendirse, salir)
@@ -180,43 +180,43 @@ Inicia el programa mostrando el menú de dificultad
 
 1. **Menú inicial**: 
    - Elige entre Fácil, Medio o Difícil
-   - 🆕 Muestra el récord actual si existe
+   - Muestra el récord actual si existe
 
 2. **Pantalla de inicio**:
    - Muestra configuración del juego
-   - 🆕 Muestra mejor tiempo del nivel
-   - 🆕 Indica que puedes escribir 'ayuda'
-   - 🆕 Inicia el cronómetro
+   - Muestra mejor tiempo del nivel
+   - Indica que puedes escribir 'ayuda'
+   - Inicia el cronómetro
 
 3. **Primera jugada**:
-   - 🆕 **Protegida**: Si hay mina, se mueve automáticamente
+   - **Protegida**: Si hay mina, se mueve automáticamente
    - Siempre es segura
 
 4. **Durante el juego**:
    - Tablero con colores
-   - 🆕 Cronómetro visible en cada turno
+   - Cronómetro visible en cada turno
    - Introduce coordenadas o comandos especiales
-   - 🆕 Usa `pista` si necesitas ayuda
-   - 🆕 Usa `ayuda` para ver todos los comandos
+   - Usa `pista` si necesitas ayuda
+   - Usa `ayuda` para ver todos los comandos
 
 5. **Resultados**:
    - Si pisa una mina (💣) → **PIERDE**
-     - 🆕 Muestra tiempo de juego
+     - Muestra tiempo de juego
      - Revela todas las minas en rojo
    - Si descubre todas las celdas seguras → **GANA** 🎉
-     - 🆕 Muestra tiempo final
-     - 🆕 Guarda puntuación
-     - 🆕 Notifica si es nuevo récord 🏆
+     - Muestra tiempo final
+     - Guarda puntuación
+     - Notifica si es nuevo récord 🏆
 
 6. **Rejugabilidad**: 
    - Puede elegir otra dificultad
-   - 🆕 Los récords se guardan entre sesiones
+   - Los récords se guardan entre sesiones
 
 ---
 
 ## 📁 Archivos Generados
 
-### `puntuaciones.json` 🆕
+### `puntuaciones.json`
 Almacena los mejores tiempos por dificultad:
 ```json
 {
@@ -228,7 +228,7 @@ Almacena los mejores tiempos por dificultad:
 
 ---
 
-## 🐛 Bugs Corregidos
+## 🐛 Problemas encontrados
 
 ### 1. Victoria No Detectada con Pistas 🔧
 **Problema**: Al usar el comando `pista` para descubrir las últimas celdas seguras, el juego no detectaba la victoria automáticamente. El jugador tenía que introducir coordenadas y pisar una mina para terminar el juego.
@@ -268,7 +268,7 @@ print(f" {Colores.GRIS}{celda}{Colores.RESET} ", end="")  # " # "
 
 ---
 
-## 🔧 Mejoras Técnicas
+## 🔧 Evolucion del código del juego
 
 ### 1. Algoritmo Iterativo vs Recursivo
 **Antes**: Usaba recursión para expandir celdas vacías  
@@ -297,61 +297,7 @@ print(f" {Colores.GRIS}{celda}{Colores.RESET} ", end="")  # " # "
 
 ---
 
-## 🎯 Ejemplo de Sesión de Juego
-
-```
-==================================================
-     🎯 BUSCAMINAS - JUEGO EN CONSOLA
-==================================================
-Dificultad: Medio
-Tablero: 8x8
-Número de minas: 10
-🏆 Mejor tiempo: 02:15
-
-💡 Escribe 'ayuda' para ver todos los comandos
-==================================================
-
-   0  1  2  3  4  5  6  7
- 0 #  #  #  #  #  #  #  #
- 1 #  #  #  #  #  #  #  #
-...
-
-⏱️  Tiempo: 00:35
-
-Introduce fila (0-7) o comando: pista
-
-💡 Pista: La celda (3, 4) es segura
-
-[Celda revelada automáticamente]
-
-⏱️  Tiempo: 01:45
-
-[Al ganar]
-🎉 ¡FELICIDADES!
-✅ ¡Has ganado! Encontraste todas las celdas seguras.
-⏱️  Tiempo final: 02:03
-🏆 ¡NUEVO RÉCORD! ¡Felicidades!
-```
-
-### Ejemplo en Modo Difícil (Alineación Perfecta)
-```
-    0  1  2  3  4  5  6  7  8  9 10 11
- 0 #  #  #  #  #  #  #  #  #  #  #  #
- 1 #  #  #  #  #  #  #  #  #  #  #  #
- 2 #  #  #  #  #  #  #  #  #  #  #  #
- 3 #  #  #  #  #  #  #  #  #  #  #  #
-...
-10 #  #  #  #  #  #  #  #  #  #  #  #
-11 #  #  #  #  #  #  #  #  #  #  #  #
-
-⏱️  Tiempo: 00:15
-```
-> ✅ Nota: Todos los números tienen ancho fijo de 2 caracteres,
-> garantizando alineación perfecta en tableros grandes.
-
----
-
-## 📊 Resumen de Cambios
+## 📊 Tabla comparativa
 
 | Aspecto | Versión Original | Versión Mejorada |
 |---------|------------------|------------------|
