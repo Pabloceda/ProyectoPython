@@ -131,19 +131,22 @@ Como en `jugar()` se crean dos jugadores (`usuario` y `cpu`):
 > El tablero `cpu.tablero_rival` ocupa memoria pero no tiene uso estratégico porque la CPU dispara al azar sin recordar sus intentos anteriores.
 
 ```mermaid
-graph LR
-    subgraph Usuario["🧑‍✈️ Usuario"]
-        UP[tablero_propio<br/>Tus barcos]
-        UR[tablero_rival<br/>Tus notas]
+flowchart LR
+    subgraph Usuario["🧑‍✈️ USUARIO"]
+        UP["📋 tablero_propio<br/>(Tus barcos)"]
+        UR["📝 tablero_rival<br/>(Registro disparos)"]
     end
     
     subgraph CPU["🤖 CPU"]
-        CP[tablero_propio<br/>Barcos enemigos]
-        CR[tablero_rival<br/>Sin uso]
+        CP["📋 tablero_propio<br/>(Barcos enemigos)"]
+        CR["📝 tablero_rival<br/>(Sin uso)"]
     end
     
-    UR -.->|Disparas aquí| CP
-    UP <-.->|CPU dispara aquí| UP
+    UR -->|"🎯 TÚ disparas"| CP
+    CP -->|"💥 Resultado"| UR
+    
+    UP -->|"🎯 CPU dispara"| UP
+    UP -->|"💥 Te hunden"| UP
 ```
 
 ---
