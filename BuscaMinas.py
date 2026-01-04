@@ -134,8 +134,7 @@ def calcular_numeros(tablero):
                         nueva_columna = columna + j
                         
                         # Verifica que la celda esté dentro del tablero
-                        if (0 <= nueva_fila < FILAS and 
-                            0 <= nueva_columna < COLUMNAS):
+                        if (0 <= nueva_fila < FILAS and 0 <= nueva_columna < COLUMNAS):
                             # Si la celda adyacente tiene mina, incrementa el contador
                             if tablero[nueva_fila][nueva_columna] == -1:
                                 minas_adyacentes += 1
@@ -443,15 +442,15 @@ def menu_dificultad():
     print("     🎮 BUSCAMINAS - SELECCIÓN DE DIFICULTAD")
     print("=" * 50)
     print("\n📊 Elige tu nivel de dificultad:\n")
-    print("  1️⃣  FÁCIL    -  Tablero 6x6   -  5 minas")
-    print("  2️⃣  MEDIO    -  Tablero 8x8   - 10 minas")
-    print("  3️⃣  DIFÍCIL  -  Tablero 12x12 - 20 minas")
+    print("  [1] FÁCIL    -  Tablero 6x6   -  5 minas")
+    print("  [2] MEDIO    -  Tablero 8x8   - 10 minas")
+    print("  [3] DIFÍCIL  -  Tablero 12x12 - 20 minas")
     print("\n" + "-" * 50)
     print(f"{Colores.AMARILLO}📌 COMANDOS DURANTE EL JUEGO:{Colores.RESET}")
-    print(f"  • {Colores.VERDE}'ayuda'{Colores.RESET}    → Ver todos los comandos y símbolos")
-    print(f"  • {Colores.VERDE}'pista'{Colores.RESET}    → Revelar una celda segura")
-    print(f"  • {Colores.VERDE}'rendirse'{Colores.RESET} → Abandonar la partida actual")
-    print(f"  • {Colores.VERDE}'salir'{Colores.RESET}    → Cerrar el juego completamente")
+    print(f"  🔹 {Colores.VERDE}'ayuda'{Colores.RESET}    → Ver todos los comandos y símbolos")
+    print(f"  🔹 {Colores.VERDE}'pista'{Colores.RESET}    → Revelar una celda segura")
+    print(f"  🔹 {Colores.VERDE}'rendirse'{Colores.RESET} → Abandonar la partida actual")
+    print(f"  🔹 {Colores.VERDE}'salir'{Colores.RESET}    → Cerrar el juego completamente")
     print("-" * 50)
     print(f"{Colores.CIAN}💡 Introduce fila y columna para descubrir celdas{Colores.RESET}")
     print("=" * 50)
@@ -474,7 +473,7 @@ def menu_dificultad():
 # =====================================================================
 def jugar(filas, columnas, num_minas, nombre_dificultad):
     """
-    Función principal que ejecuta el juego de Buscaminas (MEJORADA).
+    Función principal que ejecuta el juego de Buscaminas.
     Controla el flujo del juego: inicialización, turnos y fin del juego.
     Incluye: cronómetro, protección primera jugada, comandos especiales y puntuaciones.
     
@@ -570,7 +569,7 @@ def jugar(filas, columnas, num_minas, nombre_dificultad):
                         juego_activo = False
                         break
                 else:
-                    print(f"\n{Colores.AMARILLO}⚠️  No hay más celdas seguras disponibles{Colores.RESET}\n")
+                    print(f"\n{Colores.AMARILLO}⚠️  No hay más celdas seguras disponibles{Colores.RESET}\n") #Esta linea es para que el usuario sepa que no hay mas celdas seguras disponibles pero por la logica del programa cuando no haya más pistas que dar significa que las celdas restantes son el numero de minas del nivel por lo tanto el usuario gana.
                 continue
             elif entrada == 'rendirse':
                 print(f"\n{Colores.AMARILLO}😔 Te has rendido. Aquí está el tablero completo:{Colores.RESET}")
