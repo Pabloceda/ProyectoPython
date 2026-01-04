@@ -8,9 +8,33 @@ Juego clásico de **Hundir la Flota** (Battleship) implementado en Python para c
 
 ## Estructura del Código
 
+El código está organizado en las siguientes secciones:
+1. **Docstring del módulo** - Descripción general del archivo
+2. **Importaciones** - Módulos necesarios
+3. **Constantes** - Valores configurables con nombres descriptivos
+4. **Clases** - Barco, Tablero, Jugador
+5. **Función principal** - `jugar()`
+6. **Punto de entrada** - `if __name__ == "__main__"`
+
 ### Importaciones
 ```python
 import random  # Para colocación aleatoria de barcos y disparos de la CPU
+```
+
+### Constantes
+```python
+TAMANO_TABLERO = 10
+FLOTA_BARCOS = [5, 4, 3, 3, 2]  # Portaaviones, Acorazado, Crucero, Submarino, Destructor
+
+# Símbolos del tablero
+SIMBOLO_AGUA = '~'
+SIMBOLO_BARCO = 'B'
+SIMBOLO_TOCADO = 'X'
+SIMBOLO_FALLO = '0'
+
+# Orientaciones
+HORIZONTAL = 'H'
+VERTICAL = 'V'
 ```
 
 ---
