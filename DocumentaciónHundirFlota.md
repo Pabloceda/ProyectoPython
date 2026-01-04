@@ -98,6 +98,56 @@ Representa a un jugador (usuario o CPU).
 
 ---
 
+## Lógica de los 4 Tableros en Memoria
+
+La razón matemática está en la clase `Jugador`:
+
+```python
+class Jugador:
+    def __init__(self):
+        self.tablero_propio = Tablero()  # <--- Tablero Nº 1
+        self.tablero_rival = Tablero()   # <--- Tablero Nº 2
+```
+
+Como en `jugar()` se crean dos jugadores (`usuario` y `cpu`):
+
+> **2 jugadores × 2 tableros cada uno = 4 Tableros**
+
+### 1. Tableros del USUARIO (Tú) 🧑‍✈️
+
+| Tablero | Contenido | Función | Visibilidad |
+|---------|-----------|---------|-------------|
+| `usuario.tablero_propio` | Tus barcos (`B`) | Aquí dispara la CPU para intentar hundirte | ⚠️ No se muestra (debería mostrarse) |
+| `usuario.tablero_rival` | Tus notas (`X` y `0`) | Se usa para recordar dónde has disparado | ✅ Visible en pantalla |
+
+### 2. Tableros de la CPU (La Máquina) 🤖
+
+| Tablero | Contenido | Función | Visibilidad |
+|---------|-----------|---------|-------------|
+| `cpu.tablero_propio` | Barcos enemigos (`B`) | Aquí disparas TÚ. Decide si ganas | 🌫️ Oculto (niebla de guerra) |
+| `cpu.tablero_rival` | Vacío / notas de CPU | Existe porque la clase lo crea, pero la CPU "tonta" no lo usa | ❌ Sin uso real |
+
+> [!IMPORTANT]
+> El tablero `cpu.tablero_rival` ocupa memoria pero no tiene uso estratégico porque la CPU dispara al azar sin recordar sus intentos anteriores.
+
+```mermaid
+graph LR
+    subgraph Usuario["🧑‍✈️ Usuario"]
+        UP[tablero_propio<br/>Tus barcos]
+        UR[tablero_rival<br/>Tus notas]
+    end
+    
+    subgraph CPU["🤖 CPU"]
+        CP[tablero_propio<br/>Barcos enemigos]
+        CR[tablero_rival<br/>Sin uso]
+    end
+    
+    UR -.->|Disparas aquí| CP
+    UP <-.->|CPU dispara aquí| UP
+```
+
+---
+
 ## Función Principal `jugar()`
 
 ### Flujo del Juego
