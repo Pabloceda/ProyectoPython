@@ -1,6 +1,6 @@
 """
 PROYECTO: BUSCAMINAS EN CONSOLA
-Autor: Pablo Calderón, Hugo, Miguel, Alejandro e Íñigo
+Autores: Pablo Calderón, Hugo, Miguel, Alejandro e Íñigo
 Curso: 2º ASIR
 Descripción: Juego de Buscaminas sin interfaz gráfica, solo por consola
 """

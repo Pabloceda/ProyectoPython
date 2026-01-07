@@ -1,5 +1,10 @@
+
 """
-Hundir la Flota - Juego de Battleship en consola
+PROYECTO: HUNDIR LA FLOTA EN CONSOLA
+Autores: Pablo Calderón, Hugo, Miguel, Alejandro e Íñigo
+Curso: 2º ASIR
+Descripción: Juego de Hundir la Flota sin interfaz gráfica, solo por consola
+
 =================================================
 Juego por turnos contra la CPU en tablero 10x10.
 
@@ -7,9 +12,6 @@ Clases:
     - Barco: Representa un barco con longitud y estado
     - Tablero: Gestiona el tablero 10x10 y disparos
     - Jugador: Contiene tablero propio y registro de disparos
-
-Ejecución:
-    python HundirFlota.py
 """
 
 import random
